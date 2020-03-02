@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.iwork.G629.dao.UserInfoDao">
+	<select id="queryUserInfo"
+		resultType="com.iwork.G629.entity.UserInfo">
+		SELECT *
+		FROM tb_userinfo
+		WHERE
+		user_name = #{userName} AND password = #{password}
+	</select>
+	<select id="querySingleUserInfo"
+		resultType="com.iwork.G629.entity.UserInfo">
+		SELECT user_name,user_id,status,create_time
+		FROM tb_userinfo
+		WHERE
+		user_name = #{userName}
+	</select>
+	<insert id="insertUserInfo" useGeneratedKeys="true"
+		keyColumn="user_id" keyProperty="userId">
+		INSERT INTO
+		tb_userinfo(user_id,user_name,password,status,create_time,email,level,unit,qq,personal_name)
+		VALUES
+		(#{userId},#{userName},#{password},#{status},#{createTime},#{email},#{level},#{unit},#{qq},#{personalName})
+	</insert>
+	<update id="updateUserInfo">
+		UPDATE
+		tb_userinfo
+		SET
+		password = #{newPassword}
+		WHERE
+		password = #{oldPassword}
+	</update>
+
+	<update id="updateUserAllInfo"
+		parameterType="com.iwork.G629.entity.UserInfo">
+		UPDATE
+		tb_userinfo
+		SET
+		<if test="userInfo.email!=null">email =
+			#{userInfo.email},</if>
+		<if test="userInfo.level!=null">level =
+			#{userInfo.level},</if>
+		<if test="userInfo.unit!=null">unit =
+			#{userInfo.unit},</if>
+		<if test="userInfo.qq!=null">qq =
+			#{userInfo.qq},</if>
+		<if test="userInfo.personalName!=null">personal_name =
+			#{userInfo.personalName}</if>
+		WHERE
+		user_name = #{userInfo.userName}
+	</update>
+</mapper>

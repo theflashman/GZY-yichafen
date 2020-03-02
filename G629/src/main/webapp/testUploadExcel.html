@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+	<script type='text/javascript'
+		src='//g.alicdn.com/sj/lib/zepto/zepto.min.js' charset='utf-8'></script>
+	<script type='text/javascript'
+		src='//g.alicdn.com/msui/sm/0.6.2/js/sm.min.js' charset='utf-8'></script>
+	<script type='text/javascript'
+		src='//g.alicdn.com/msui/sm/0.6.2/js/sm-extend.min.js' charset='utf-8'></script>
+	<script type="text/javascript">
+	$(function() {
+		//getSingleUserInfo();
+		yuansuojb=document.getElementById('Upload');       
+        //给xx元素加事件
+        yuansuojb.onclick=function(){getSingleUserInfo();};
+		function getSingleUserInfo() {
+			var excelFile = $('#excelFile')[0].files[0];
+			var formData = new FormData();	
+			formData.append('excelFile', excelFile);
+			formData.append('itemName',"第9999百次月考");
+			formData.append('userName', "dsa");
+			$.ajax({
+				url : '/G629/studentachievement/batchinsertstudentachievementbyexcel',
+				type : 'POST',
+				data : formData,
+				contentType : false,
+				processData : false,
+				cache : false,
+				success : function(data) {
+					if (data.success) {
+						$.toast('提交成功！');
+						$("#id").text(data.success);
+					} else {
+						$.toast('提交失败！');
+						$("#id").text(data.errMsg);
+						
+					}
+				}
+			});
+		}
+	})
+</script>
+	<input type="file" id="excelFile">
+	<button id='Upload' onclick="Upload()">上传</button>
+	<span id="id"></span>
+	<div id="image">
+		<img src="/QRCodeImage/18.jpg" alt="logo">
+	</div>
+</body>
+</html>

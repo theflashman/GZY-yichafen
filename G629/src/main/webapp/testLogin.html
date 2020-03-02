@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+	<script type='text/javascript'
+		src='//g.alicdn.com/sj/lib/zepto/zepto.min.js' charset='utf-8'></script>
+	<script type='text/javascript'
+		src='//g.alicdn.com/msui/sm/0.6.2/js/sm.min.js' charset='utf-8'></script>
+	<script type='text/javascript'
+		src='//g.alicdn.com/msui/sm/0.6.2/js/sm-extend.min.js' charset='utf-8'></script>
+	<script type="text/javascript">
+		$(function() {
+			var url = '/G629/superadmin/registersingleuserinfo';
+			//getSingleUserInfo();
+			yuansuojb=document.getElementById('submit');       
+            //给xx元素加事件
+            yuansuojb.onclick=function(){getSingleUserInfo();};
+			function getSingleUserInfo() {
+				var formData = new FormData();
+				var userName = $('#userName').val();
+				var password = $('#password').val();
+				var status = $('#status').val();;
+				formData.append('userName', userName);
+				formData.append('password', password);
+				formData.append('status', status);
+				$.ajax({
+					url : url,
+					type : 'post',
+					data : formData,
+					contentType : false,
+					processData : false,
+					cache : false,
+					success : function(data) {
+						console.log(data);
+						if (data.success) {
+							$.toast('提交成功！');
+							$("#id").text(data.rows.userName);
+						} else {
+							$.toast('提交失败！' + data.errMsg);
+							$("#id").text("账号或密码错误");
+
+						}
+					}
+				});
+			}
+		})
+	</script>
+	<span id="id"></span>
+	<textarea id="userName" placeholder="username"></textarea>
+	<textarea id="password" placeholder="password"></textarea>
+	<textarea id="status" placeholder="status"></textarea>
+	<button id="submit" onclick="fun()">提交</button>
+</body>
+</html>

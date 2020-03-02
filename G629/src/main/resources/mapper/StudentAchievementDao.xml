@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.iwork.G629.dao.StudentAchievementDao">
+	<resultMap type="com.iwork.G629.entity.StudentAchievement"
+		id="StudentAchievementMap">
+		<id column="p_k" property="pK" />
+		<result column="stu_id" property="stuId" />
+		<result column="stu_name" property="stuName" />
+		<result column="stu_grade" property="stuGrade" />
+		<result column="stu_class" property="stuClass" />
+		<result column="achievement" property="achievement" />
+		<result column="item_id" property="itemId" />
+
+	</resultMap>
+	<resultMap type="com.iwork.G629.entity.ItemInfo"
+		id="ItemInfoMap">
+		<id column="item_id" property="itemId" />
+		<result column="item_name" property="itemName" />
+		<result column="user_id" property="userId" />
+		<result column="user_name" property="userName" />
+		<result column="create_time" property="createTime" />
+		<result column="last_edit_time" property="lastEditTime" />
+		<result column="query_times" property="queryTimes" />
+	</resultMap>
+
+
+	<update id="addQueryTimes">
+		UPDATE tb_useritem
+		<set>
+			query_times = query_times + 1
+		</set>
+		<where>
+			item_id = #{itemId}
+		</where>
+	</update>
+
+
+	<select id="queryByUser"
+		resultType="com.iwork.G629.entity.StudentAchievement">
+		SELECT *
+		FROM
+		tb_student_achievement
+		<where>
+			<if test="sa.stuName!=null">
+				AND stu_name = #{sa.stuName}
+			</if>
+			<if test="sa.stuId!=null">
+				AND stu_id = #{sa.stuId}
+			</if>
+			<if test="sa.stuGrade!=null">
+				AND stu_grade = #{sa.stuGrade}
+			</if>
+			<if test="sa.stuClass!=null">
+				AND stu_class = #{sa.stuClass}
+			</if>
+			<if test="sa.achievement!=-1">
+				AND achievement = #{sa.achievement}
+			</if>
+			<if test="sa.itemId!=null">
+				AND item_id = #{sa.itemId}
+			</if>
+			<if test="sa.leaveWord!=null">
+				AND leave_word = #{sa.leaveWord}
+			</if>
+			<if test="sa.pK!=null">
+				AND p_k = #{sa.pK}
+			</if>
+		</where>
+	</select>
+
+
+	<select id="queryByStuIdAndName"
+		resultType="com.iwork.G629.entity.StudentAchievement">
+		SELECT *
+		FROM
+		tb_student_achievement
+		WHERE stu_id =#{stuId}
+		AND item_id =#{itemId}
+	</select>
+
+
+	<select id="querySingleUserInfo"
+		resultType="com.iwork.G629.entity.UserInfo">
+		SELECT user_name,user_id,status,create_time
+		FROM tb_userinfo
+		WHERE
+		user_name = #{userName}
+	</select>
+	<select id="queryStudentAchievementBystuId"
+		resultMap="StudentAchievementMap">
+		SELECT
+		stu_name,
+		stu_id,
+		stu_grade,
+		stu_class,
+		achievement,
+		tb_student_achievement.item_id,
+		leave_word,
+		p_k
+		FROM
+		tb_student_achievement,
+		tb_useritem
+		WHERE
+		tb_student_achievement.stu_id =
+		#{stuId}
+		AND
+		tb_student_achievement.stu_name =
+		#{stuName}
+		AND
+		tb_useritem.user_name = #{userName}
+		GROUP BY `item_id`
+	</select>
+
+
+	<select id="queryItemId" resultType="Integer">
+		SELECT
+		item_id
+		FROM
+		tb_useritem
+		WHERE
+		item_name = #{itemName} AND user_name = #{userName}
+	</select>
+
+
+	<insert id="insertExcelFormInfo"
+		parameterType="com.iwork.G629.entity.ItemInfo">
+		INSERT INTO
+		tb_useritem(item_id,item_name,user_id,user_name,create_time,last_edit_time)
+		VALUES
+		(#{itemId},#{itemName},#{userId},#{userName},#{createTime},#{lastEditTime})
+	</insert>
+
+
+	<insert id="batchInsertStudentAchievement"
+		parameterType="java.util.List">
+		INSERT INTO
+		tb_student_achievement(stu_name,stu_id,stu_grade,stu_class,achievement,item_id,p_k)
+		VALUES
+		<foreach collection="list" item="studentAchievement"
+			index="index" separator=",">
+			(
+			#{studentAchievement.stuName},
+			#{studentAchievement.stuId},
+			#{studentAchievement.stuGrade},
+			#{studentAchievement.stuClass},
+			#{studentAchievement.achievement},
+			#{studentAchievement.itemId},
+			#{studentAchievement.pK}
+			)
+		</foreach>
+	</insert>
+
+
+	<update id="batchUpdateStudentAchievement"
+		parameterType="java.util.List">
+		<foreach collection="list" item="studentAchievement"
+			index="index" open="" close="" separator=";">
+			UPDATE tb_student_achievement
+			<set>
+				<if test="studentAchievement.leaveWord!=null">
+					leave_word =
+					#{studentAchievement.leaveWord},
+				</if>
+				achievement = #{studentAchievement.achievement}
+
+			</set>
+			<where>
+				item_id=#{studentAchievement.itemId}
+				AND
+				stu_name=#{studentAchievement.stuName}
+				AND
+				stu_id=#{studentAchievement.stuId}
+			</where>
+		</foreach>
+	</update>
+
+
+
+	<select id="queryItemInfoList" parameterType="String"
+		resultMap="ItemInfoMap">
+		SELECT
+		*
+		FROM
+		tb_useritem
+		WHERE
+		user_name = #{userName}
+	</select>
+
+	<select id="queryItemByItemName" parameterType="String"
+		resultMap="ItemInfoMap">
+		SELECT
+		*
+		FROM
+		tb_useritem
+		WHERE
+		item_name LIKE "%"#{itemName}"%"
+		AND
+		user_name = #{userName}
+	</select>
+
+	<select id="queryAllstudentAchievementByItemId"
+		resultMap="StudentAchievementMap">
+		SELECT
+		*
+		FROM
+		tb_student_achievement
+		WHERE
+		item_id = #{itemId}
+	</select>
+
+
+	<delete id="deleteStudentAchievementByItemId">
+		DELETE FROM
+		tb_student_achievement
+		WHERE
+		item_id =
+		#{itemId}
+	</delete>
+
+
+	<delete id="deleteItem">
+		DELETE FROM
+		tb_useritem
+		WHERE
+		item_id =
+		#{itemId}
+	</delete>
+
+	<update id="updateItem">
+		UPDATE tb_useritem
+		<set>
+			<if test="item.itemName!=null">
+				item_name = #{item.itemName},
+			</if>
+			last_edit_time = #{item.lastEditTime}
+		</set>
+
+		<where>
+			item_id = #{item.itemId}
+		</where>
+	</update>
+</mapper>

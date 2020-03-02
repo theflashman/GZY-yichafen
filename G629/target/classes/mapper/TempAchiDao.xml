@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.iwork.G629.dao.TempAchiDao">
+	<insert id="insert">
+		INSERT INTO
+		new_student_achi(item_id,property_key,property_value,standard_id)
+		VALUES
+		(#{tA.itemId},#{tA.propertyKey},#{tA.propertyValue},#{tA.standardId})
+	</insert>
+
+
+	<insert id="batchInsert" parameterType="java.util.List">
+		INSERT INTO
+		new_student_achi(item_id,property_key,property_value,standard_id)
+		VALUES
+		<foreach collection="list" item="tempAchi" index="index"
+			separator=",">
+			(
+			#{tempAchi.itemId},
+			#{tempAchi.propertyKey},
+			#{tempAchi.propertyValue},
+			#{tempAchi.standardId}
+			)
+		</foreach>
+	</insert>
+
+
+	<update id="update"
+		parameterType="com.iwork.G629.entity.TempAchi">
+		UPDATE
+		new_student_achi
+		SET
+		<if test="tA.itemId!=null">item_id =
+			#{tA.itemId},
+		</if>
+		<if test="tA.propertyKey!=null">property_key =
+			#{tA.propertyKey},
+		</if>
+		<if test="tA.propertyValue!=null">property_value =
+			#{tA.propertyValue},
+		</if>
+		<if test="tA.standardId!=null">standard_id =
+			#{tA.standardId}
+		</if>
+		<where>
+			id = #{tA.Id}
+		</where>
+	</update>
+
+	<select id="queryByItemId"
+		resultType="com.iwork.G629.entity.TempAchi">
+		SELECT *
+		FROM
+		new_student_achi
+		WHERE
+		item_id = #{itemId}
+	</select>
+
+	<select id="queryByAny"
+		resultType="com.iwork.G629.entity.TempAchi">
+		SELECT *
+		FROM
+		new_student_achi
+		<where>
+			<if test="tA.Id!=null">
+				AND id = #{tA.Id}
+			</if>
+			<if test="tA.itemId!=null">
+				AND item_id = #{tA.itemId}
+			</if>
+			<if test="tA.propertyKey!=null">
+				AND property_key = #{tA.propertyKey}
+			</if>
+			<if test="tA.propertyValue!=null">
+				AND property_value = #{tA.propertyValue}
+			</if>
+			<if test="tA.standardId!=null">
+				AND standard_id = #{tA.standardId}
+			</if>
+		</where>
+	</select>
+
+	<delete id="delete">
+		DELETE
+		FROM
+		new_student_achi
+		WHERE
+		id = #{Id}
+	</delete>
+
+	<delete id="deleteByItemId">
+		DELETE
+		FROM
+		new_student_achi
+		WHERE
+		item_id = #{itemId}
+	</delete>
+</mapper>

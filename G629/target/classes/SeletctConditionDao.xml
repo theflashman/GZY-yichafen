@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.iwork.G629.dao.SelectConditionDao">
+	<insert id="create" useGeneratedKeys="true"
+		keyColumn="condition_id" keyProperty="conditionId">
+		INSERT INTO
+		tb_condition(condition_item_id,condition_name,condition_tip,condition_start,condition_final)
+		VALUES
+		(#{sc.conditionItemId},#{sc.conditionName},#{sc.conditionTip},#{sc.conditionStart},#{sc.conditionFinal})
+	</insert>
+
+	<update id="update"
+		parameterType="com.iwork.G629.entity.SelectCondition">
+		UPDATE
+		tb_condition
+		SET
+		<if test="sc.conditionName!=null">condition_name =
+			#{sc.conditionName},
+		</if>
+		<if test="sc.conditionTip!=null">condition_tip =
+			#{sc.conditionTip},
+		</if>
+		<if test="sc.conditionStart!=null">condition_start =
+			#{sc.conditionStart},
+		</if>
+		<if test="sc.conditionFinal!=null">condition_final =
+			#{sc.conditionFinal}
+		</if>
+		<where>
+			condition_item_id = #{sc.conditionItemId}
+			<if test="sc.conditionName!=null||sc.conditionTip!=null">
+				AND
+				condition_id =
+				#{sc.conditionId}
+			</if>
+		</where>
+	</update>
+
+	<select id="query"
+		resultType="com.iwork.G629.entity.SelectCondition">
+		SELECT *
+		FROM
+		tb_condition
+		WHERE
+		condition_item_id = #{itemId}
+	</select>
+
+	<delete id="delete">
+		DELETE
+		FROM
+		tb_condition
+		WHERE
+		condition_item_id =
+		#{itemId}
+	</delete>
+</mapper>

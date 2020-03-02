@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+	<script type='text/javascript'
+		src='//g.alicdn.com/sj/lib/zepto/zepto.min.js' charset='utf-8'></script>
+	<script type='text/javascript'
+		src='//g.alicdn.com/msui/sm/0.6.2/js/sm.min.js' charset='utf-8'></script>
+	<script type='text/javascript'
+		src='//g.alicdn.com/msui/sm/0.6.2/js/sm-extend.min.js' charset='utf-8'></script>
+	<script type="text/javascript">
+		$(function() {
+			var url = '/G629/studentachievement/updatestudentachievement';
+			//getSingleUserInfo();
+			yuansuojb = document.getElementById('submit');
+			//给xx元素加事件
+			yuansuojb.onclick = function() {
+				getSingleUserInfo();
+			};
+			function getSingleUserInfo() {
+				var studentAchievementList = [ {
+					stuName : "2",
+					stuId : 298,
+					stuGrade : 5,
+					stuClass : 3,
+					achievement : 88,
+					leaveWord:"留言1",
+					itemId : 32
+				}, {
+					stuName : "3",
+					stuId : 299,
+					stuGrade : 5,
+					stuClass : 3,
+					achievement : 88,
+					leaveWord:"留言2",
+					itemId : 32
+				} ];
+				$.ajax({
+					url : url,
+					type : 'POST',
+					data : JSON.stringify(studentAchievementList),
+					contentType : 'application/json',
+					success : function(data) {
+						if (data.success) {
+							$.toast('提交成功！');
+						} else {
+							$.toast('提交失败！');
+						}
+					}
+				});
+			}
+		})
+	</script>
+	<span id="id"></span>
+	<textarea id="userName" placeholder="username"></textarea>
+	<textarea id="oldPassword" placeholder="old password"></textarea>
+	<textarea id="newPassword" placeholder="new password"></textarea>
+	<button id="submit" onclick="submit()">提交</button>
+</body>
+</html>
